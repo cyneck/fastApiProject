@@ -1,0 +1,20 @@
+# Test your FastAPI endpoints
+
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/hello/User
+Accept: application/json
+
+###
+
+GET http://10.238.14.74/gateway/
+Accept: application/json
+Authorization: TC3-HMAC-SHA256 Credential=e8973ad41ee246bd910c6ee6c4/2022-07-01/api-imt2/tc3_request, SignedHeaders=content-type;host, Signature=d674ffe735fbf8bb7fcdb3e284bcce89080f3c86e1e57a60fa4f96d99210d282
+X-TC-Timestamp: 1656666712
+X-TC-Version: 2020-10-01
+X-TC-Action: /api/imt
+X-TC-Service: api-imt2
+Host: 10.238.14.74

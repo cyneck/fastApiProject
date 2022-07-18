@@ -1,0 +1,31 @@
+FROM centos:7
+
+MAINTAINER  xxx@qq.com
+
+RUN   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+&& echo -e 'export LANG="zh_CN.UTF-8"\nexport LC_ALL="zh_CN.UTF-8"' > /etc/locale.conf \
+&& source /etc/locale.conf
+
+ENV MYDIR  /opt/app/fastApi
+
+RUN mkdir -p $MYDIR
+
+RUN yum install -y libffi-devel zlib-devel bzip2-devel openssl-devel ncurses-devel tk-devel gcc make wget vim
+
+RUN cd /tmp && wget https://nginx.org/download/nginx-1.18.0.tar.gz \
+&& tar -zxvf  nginx-1.18.0.tar.gz \
+&& cd /tmp/nginx-1.18.0 \
+&& ./configure --prefix=/usr/local/nginx \
+&& make && make install \
+&& rm -rf /tmp/nginx-1.18.0* && yum clean all && ln -s /usr/local/nginx/sbin/nginx /usr/bin/nginx
+
+RUN  wget https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz && tar -zxvf Python-3.8.2.tgz && cd Python-3.8.2 \
+&&  ./configure --enable-optimizations && make -j8 && make install
+
+RUN pip3.8 install uvicorn fastapi -i https://pypi.douban.com/simple
+
+WORKDIR $MYDIR
+
+EXPOSE 80
+
+CMD ["nginx","-g","daemon off;"]
