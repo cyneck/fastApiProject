@@ -15,7 +15,7 @@ async def test():
     return {"message": "testing: service is healthy"}
 
 
-@app.get("/api/{text}")
+@app.get("/api/text")
 async def say_hello(text: str):
     seg = pkuseg.pkuseg()
     words = seg.cut(text)
