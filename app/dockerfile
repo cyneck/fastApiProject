@@ -18,6 +18,7 @@ libssl-dev libreadline-dev libffi-dev libbz2-dev wget curl axel vim net-tools
 
 RUN  cd /tmp/ && axel -n 10 https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz && tar -zxvf Python-3.8.2.tgz
 RUN  cd /tmp/Python-3.8.2 && ./configure --enable-optimizations && make -j8 && make install && make clean
+# RUN  python3 -m pip install --upgrade pip && python3 -m pip install --upgrade setuptools
 
 RUN pip3 install uvicorn fastapi -i https://pypi.douban.com/simple
 
