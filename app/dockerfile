@@ -14,7 +14,7 @@ RUN  sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list 
 RUN apt install nginx -y
 
 RUN apt install -y libpcre3 libpcre3-dev build-essential cmake zlib1g-dev openssl libncurses5-dev libgdbm-dev libnss3-dev \
-libssl-dev libreadline-dev libffi-dev libbz2-dev wget curl axel vim net-tools
+libssl-dev libreadline-dev libffi-dev libbz2-dev liblzma-dev libsndfile1 libsqlite3-dev wget curl axel vim net-tools
 
 RUN  cd /tmp/ && axel -n 10 https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz && tar -zxvf Python-3.8.2.tgz
 RUN  cd /tmp/Python-3.8.2 && ./configure --enable-optimizations && make -j8 && make install && make clean
