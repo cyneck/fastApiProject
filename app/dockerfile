@@ -20,7 +20,7 @@ RUN  cd /tmp/ && axel -n 10 https://www.python.org/ftp/python/3.8.2/Python-3.8.2
 RUN  cd /tmp/Python-3.8.2 && ./configure --enable-optimizations && make -j8 && make install && make clean
 # RUN  python3 -m pip install --upgrade pip && python3 -m pip install --upgrade setuptools
 
-RUN pip3 install uvicorn fastapi -i https://pypi.douban.com/simple
+RUN pip3 install uvicorn fastapi pkuseg -i https://pypi.douban.com/simple
 
 # CMD [ "python3","main.py" ]
 

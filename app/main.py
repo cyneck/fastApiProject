@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
+import pkuseg
 
 app = FastAPI()
 
@@ -8,14 +9,17 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+
 @app.get("/api/test")
-async def root():
+async def test():
     return {"message": "testing: service is healthy"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/api/{text}")
+async def say_hello(text: str):
+    seg = pkuseg.pkuseg()
+    words = seg.cut(text)
+    return {"message": f"{words}"}
 
 
 if __name__ == '__main__':
