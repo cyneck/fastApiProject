@@ -1,0 +1,13 @@
+user: eric
+home: /home/eric
+tasks:
+- name : add user "{{user}}"
+  user :
+    name: "{{user}}"
+    home: "{{home}}"
+
+ - name : debug user
+   debug :
+   msg: >
+     username is {{user}}
+     home is {{home}}
