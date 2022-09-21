@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
+from typing import Optional
 import uvicorn
 import pkuseg
 
@@ -15,8 +16,10 @@ async def test():
     return {"message": "testing: service is healthy"}
 
 
-@app.get("/api/text")
-async def say_hello(text: str):
+@app.post("/api/text")
+async def say_hello(
+        text: str = Body(None, title='文本', max_length=1024)
+):
     seg = pkuseg.pkuseg()
     words = seg.cut(text)
     return {"message": f"{words}"}
