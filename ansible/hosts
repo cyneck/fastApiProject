@@ -1,0 +1,7 @@
+[all]
+192.168.1.2 ansible_ssh_host=192.168.1.2 ansible_ssh_port=22 ansible_ssh_user=root ansible_ssh_pass=123 ansible_become_password=123
+192.168.1.4
+
+# 定义属于整个组的变量
+[all:vars]
+user=eric
