@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # -n ntp服务器
+# 输入增加-n 参数，并判空
 ntp_server=''
 while getopts ":n:" opt; do
   case $opt in
@@ -8,12 +9,17 @@ while getopts ":n:" opt; do
     # echo "n参数的值${OPTARG}"
     ntp_server=${OPTARG}
     ;;
-  ?)
+  \?)
     echo "未知参数${OPTARG}"
     exit 1
     ;;
   esac
 done
+
+if [ "$ntp_server" =  "" ];then
+  echo "ntp服务器地址不能为空,请重新输入,加入合适的参数值，例如：-n 127.127.1.0"
+  exit 1
+fi
 
 #echo $ntp_server
 
