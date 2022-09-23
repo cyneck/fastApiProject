@@ -118,6 +118,7 @@ function set_sysctl_conf() {
     item_value=${item_value_array[i]}
     value=$(cat /etc/sysctl.conf | grep "$item")
     if [ -z "$value" ]; then
+      # 为空
       echo "$item_value" >>/etc/sysctl.conf
     else
       sed -ir "s/^$item.*/$item_value/g" /etc/sysctl.conf
@@ -141,6 +142,7 @@ function set_hosts() {
   new_hosts="$ip $(hostname)"
   value=$(cat /etc/hosts | grep "$new_hosts")
   if [ -z "$value" ]; then
+    # 为空
     echo $new_hosts >>/etc/hosts
   fi
   cat /etc/hosts
@@ -156,7 +158,8 @@ function set_dir_chmod() {
 function set_iptable_nat() {
   set -e
   value=$(cat /etc/modules-load.d/cpaas.conf | grep iptable_nat)
-  if [ -n "$value" ]; then
+  if [ -z "$value" ]; then
+    # 为空
     modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
   fi
   set +e
@@ -166,7 +169,8 @@ function set_iptable_nat() {
 
 function set_core_profile() {
   value=$(cat /etc/profile | grep ulimit)
-  if [ -n "$value" ]; then
+  if [ -z "$value" ]; then
+    # 为空
     ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
   fi
   cat /etc/profile
@@ -175,7 +179,8 @@ function set_core_profile() {
 
 function check_avx2() {
   value=$(cat /proc/cpuinfo | grep avx2)
-  if [ -z "$value" ]; then
+  if [ -n "$value" ]; then
+    # 不为空
     cat /proc/cpuinfo | grep avx2
     SUCCESS '13. avx2指令集支持'
   else
@@ -185,7 +190,8 @@ function check_avx2() {
 
 function set_grub_config() {
   value=$(cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX")
-  if [ -z "$value" ]; then
+  if [ -n "$value" ]; then
+    # 不为空
     has=$(cat /etc/default/grub | grep "ipv6.disable=1")
     if [ -z "$has" ]; then
       sed -ir "s/ipv6.disable=1//" /etc/default/grub
@@ -211,7 +217,7 @@ function make_dir() {
   mkdir -p /data/ti-platform/ && chmod 755 /data/ti-platform/
   mkdir /data/ti-platform-fs
   ls /data/
-  INFO "15. 新建ti-platform目录和ti-platform-fs目录（如果已经存在将会忽略）"
+  INFO "15. 新建ti-platform目录和ti-platform-fs目录（如果已经存在请忽略）"
 }
 
 INFO "开始..."
