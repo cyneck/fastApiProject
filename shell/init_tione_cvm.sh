@@ -34,17 +34,17 @@ function boot_mode_check() {
   set +e
   if [ "$boot_mode" = 'BIOS' ]; then
     [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
-    SUCCESS '启动模式为Legacy'
+    SUCCESS '1. 启动模式为Legacy'
   else
-    ERROR '启动模式不为Legacy'
+    ERROR '1. 启动模式不为Legacy'
   fi
 }
 
 function install_pkg() {
   set -e
-  yum install -y jq sshpass socat bind-utils net-tools ntpdate redhat-lsb
+  yum install -y jq sshpass socat bind-utils net-tools ntpdate redhat-lsb ceph-fuse
   set +e
-  SUCCESS '安装基础依赖包jq sshpass socat bind-utils net-tools ntpdate redhat-lsb'
+  SUCCESS '2. 安装基础依赖包jq sshpass socat bind-utils net-tools ntpdate redhat-lsb ceph-fuse'
 }
 
 function br_netfilter() {
@@ -53,12 +53,15 @@ function br_netfilter() {
   echo 1 >/proc/sys/net/bridge/bridge-nf-call-iptables
   echo 1 >/proc/sys/net/bridge/bridge-nf-call-ip6tables
   set +e
-  SUCCESS '添加网桥过滤'
+  cat /proc/sys/net/bridge/bridge-nf-call-iptables
+  cat /proc/sys/net/bridge/bridge-nf-call-ip6tables
+  SUCCESS '3. 添加网桥过滤'
 }
 
 function swap_off() {
   set -e
-  echo "vm.swappiness = 0" >>/etc/sysctl.conf
+  sed -ir 's/^vm.swappiness.*/vm.swappiness = 0' /etc/sysctl.conf
+#  echo "vm.swappiness = 0" >>/etc/sysctl.conf
   sysctl -p
   swapoff -a
   sed -ir '/swap/s/^/#/' /etc/fstab
@@ -67,7 +70,7 @@ function swap_off() {
   cat /etc/sysctl.conf
   cat /etc/fstab
   free -h
-  SUCCESS 'swap_off'
+  SUCCESS '4. swap_off'
 }
 
 function stop_firewalld() {
@@ -75,21 +78,22 @@ function stop_firewalld() {
   systemctl stop firewalld
   systemctl disable firewalld
   set +e
-  SUCCESS '关闭防火墙'
+  SUCCESS '5. 关闭防火墙'
 }
 
 function stop_selinux() {
-  sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+#  sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+  sed -ir 's/SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
   cat /etc/selinux/config | grep SELINUX
-  SUCCESS '关闭selinux'
+  SUCCESS '6. 关闭selinux'
 }
 
 function set_timezone() {
   timedatectl set-timezone Asia/Shanghai
   if [ $? -eq 0 ]; then
-    SUCCESS '服务器时区Asia/Shanghai成功'
+    SUCCESS '7. 服务器时区Asia/Shanghai成功'
   else
-    ERROR "服务器时区Asia/Shanghai失败"
+    ERROR "7. 服务器时区Asia/Shanghai失败"
   fi
 
 }
@@ -124,9 +128,9 @@ function set_sysctl_conf() {
   cat /etc/sysctl.conf | grep -E "vm|net|fs|kernel"
   sysctl -p
   if [ $? -eq 0 ]; then
-    SUCCESS "设置sysctl_conf成功"
+    SUCCESS "8. 设置sysctl_conf成功"
   else
-    ERROR "设置sysctl_conf失败"
+    ERROR "8. 设置sysctl_conf失败"
   fi
   set +e
 
@@ -140,13 +144,13 @@ function set_hosts() {
     echo $new_hosts >>/etc/hosts
   fi
   cat /etc/hosts
-  SUCCESS "set /etc/hosts成功"
+  SUCCESS "9. set /etc/hosts成功"
 }
 
 function set_dir_chmod() {
   chmod 777 /tmp
   chmod 755 /data
-  SUCCESS "/tmp /data目录权限成功"
+  SUCCESS "10. /tmp /data目录权限成功"
 }
 
 function set_iptable_nat() {
@@ -157,7 +161,7 @@ function set_iptable_nat() {
   fi
   set +e
   cat /etc/modules-load.d/cpaas.conf
-  SUCCESS "/etc/modules-load.d/cpaas.conf配置成功"
+  SUCCESS "11. /etc/modules-load.d/cpaas.conf配置成功"
 }
 
 function set_core_profile() {
@@ -166,16 +170,16 @@ function set_core_profile() {
     ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
   fi
   cat /etc/profile
-  SUCCESS "/etc/profile ulimit项配置成功"
+  SUCCESS "12. /etc/profile ulimit项配置成功"
 }
 
 function check_avx2() {
   value=$(cat /proc/cpuinfo | grep avx2)
   if [ -z "$value" ]; then
     cat /proc/cpuinfo | grep avx2
-    SUCCESS 'avx2指令集支持'
+    SUCCESS '13. avx2指令集支持'
   else
-    WARN "avx2指令集不支持"
+    WARN "13. avx2指令集不支持"
   fi
 }
 
@@ -196,9 +200,9 @@ function set_grub_config() {
   grub2-mkconfig -o /boot/grub2/grub.cfg
   if [ $? -eq 0 ]; then
     cat /etc/default/grub
-    SUCCESS "设置grub成功"
+    SUCCESS "14. 设置grub成功"
   else
-    ERROR "设置grub失败"
+    ERROR "14. 设置grub失败"
   fi
 
 }
