@@ -146,20 +146,27 @@ function set_hosts() {
 function set_dir_chmod() {
   chmod 777 /tmp
   chmod 755 /data
-  SUCCESS "/tmp /data目录权限"
+  SUCCESS "/tmp /data目录权限成功"
 }
 
 function set_iptable_nat() {
   set -e
-  modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
+  value=$(cat /etc/modules-load.d/cpaas.conf | grep iptable_nat)
+  if [ -n "$value" ]; then
+    modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
+  fi
   set +e
   cat /etc/modules-load.d/cpaas.conf
   SUCCESS "/etc/modules-load.d/cpaas.conf配置成功"
 }
 
 function set_core_profile() {
-  ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
-  SUCCESS "/etc/profile配置成功"
+  value=$(cat /etc/profile | grep ulimit)
+  if [ -n "$value" ]; then
+    ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
+  fi
+  cat /etc/profile
+  SUCCESS "/etc/profile ulimit项配置成功"
 }
 
 function check_avx2() {
@@ -184,7 +191,6 @@ function set_grub_config() {
     grub_cmd=$(cat /etc/default/grub | grep GRUB_CMDLINE_LINUX | awk '{print $1}')
     grub_cmd_new="$grub_cmd cgroup.memory=nokmem"
     sed -i "s/$grub_cmd/$grub_cmd_new/" /etc/default/grub
-    cat /etc/default/grub | grep GRUB_CMDLINE_LINUX
   fi
 
   grub2-mkconfig -o /boot/grub2/grub.cfg
@@ -200,6 +206,7 @@ function set_grub_config() {
 function make_dir() {
   mkdir -p /data/ti-platform/ && chmod 755 /data/ti-platform/
   mkdir /data/ti-platform-fs
+  ls /data/
   INFO "新建ti-platform目录和ti-platform-fs目录（如果已经存在将会忽略）"
 }
 
