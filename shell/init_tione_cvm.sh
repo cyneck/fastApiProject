@@ -55,12 +55,12 @@ function br_netfilter() {
   set +e
   cat /proc/sys/net/bridge/bridge-nf-call-iptables
   cat /proc/sys/net/bridge/bridge-nf-call-ip6tables
-  SUCCESS '3. 添加网桥过滤'
+  SUCCESS '3. 添加网桥过滤成功'
 }
 
 function swap_off() {
   set -e
-  sed -ir 's/^vm.swappiness.*/vm.swappiness = 0' /etc/sysctl.conf
+  sed -ir 's/^vm.swappiness.*/vm.swappiness = 0/g' /etc/sysctl.conf
 #  echo "vm.swappiness = 0" >>/etc/sysctl.conf
   sysctl -p
   swapoff -a
@@ -70,7 +70,7 @@ function swap_off() {
   cat /etc/sysctl.conf
   cat /etc/fstab
   free -h
-  SUCCESS '4. swap_off'
+  SUCCESS '4. swap_off成功'
 }
 
 function stop_firewalld() {
@@ -78,14 +78,14 @@ function stop_firewalld() {
   systemctl stop firewalld
   systemctl disable firewalld
   set +e
-  SUCCESS '5. 关闭防火墙'
+  SUCCESS '5. 关闭防火墙成功'
 }
 
 function stop_selinux() {
 #  sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
   sed -ir 's/SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
   cat /etc/selinux/config | grep SELINUX
-  SUCCESS '6. 关闭selinux'
+  SUCCESS '6. 关闭selinux成功'
 }
 
 function set_timezone() {
