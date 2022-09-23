@@ -33,9 +33,9 @@ function boot_mode_check() {
   boot_mode=$([ -d /sys/firmware/efi ] && echo UEFI || echo BIOS)
   set +e
   if [ "$boot_mode" = 'BIOS' ]; then
-    SUCCESS '启动模式设置为Legacy'
+    SUCCESS '启动模式为Legacy'
   else
-    ERROR '启动模式设置不为Legacy'
+    ERROR '启动模式不为Legacy'
   fi
 }
 
@@ -189,5 +189,38 @@ function set_grub_config() {
 function make_dir() {
   mkdir -p /data/ti-platform/ && chmod 755 /data/ti-platform/
   mkdir /data/ti-platform-fs
-  INFO "新建ti-platform目录和ti-platform-fs目录（如果已经存在忽略）"
+  INFO "新建ti-platform目录和ti-platform-fs目录（如果已经存在将会忽略）"
 }
+
+INFO "开始..."
+boot_mode_check
+
+install_pkg
+
+br_netfilter
+
+swap_off
+
+stop_firewalld
+
+stop_selinux
+
+set_timezone
+
+set_sysctl_conf
+
+set_hosts
+
+set_dir_chmod
+
+set_iptable_nat
+
+set_core_profile
+
+check_avx2
+
+set_grub_config
+
+make_dir
+
+INFO "正常结束！"
