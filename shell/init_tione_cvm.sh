@@ -67,7 +67,7 @@ function swap_off() {
   sed -ir '/swap/s/^/#/' /etc/fstab
   set +e
 
-  cat /etc/sysctl.conf
+  cat /etc/sysctl.conf |grep 'vm.swappiness'
   cat /etc/fstab
   free -h
   SUCCESS '4. swap_off成功'
@@ -157,31 +157,31 @@ function set_dir_chmod() {
 
 function set_iptable_nat() {
   set -e
-  value=$(cat /etc/modules-load.d/cpaas.conf | grep iptable_nat)
+  value=$(cat /etc/modules-load.d/cpaas.conf | grep "iptable_nat")
   if [ -z "$value" ]; then
     # 为空
     modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
   fi
   set +e
-  cat /etc/modules-load.d/cpaas.conf
+  cat /etc/modules-load.d/cpaas.conf |grep "iptable_nat"
   SUCCESS "11. /etc/modules-load.d/cpaas.conf配置成功"
 }
 
 function set_core_profile() {
-  value=$(cat /etc/profile | grep ulimit)
+  value=$(cat /etc/profile | grep "ulimit")
   if [ -z "$value" ]; then
     # 为空
     ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
   fi
-  cat /etc/profile
+  cat /etc/profile |grep "ulimit"
   SUCCESS "12. /etc/profile ulimit项配置成功"
 }
 
 function check_avx2() {
-  value=$(cat /proc/cpuinfo | grep avx2)
+  value=$(cat /proc/cpuinfo | grep -m1 "avx2")
   if [ -n "$value" ]; then
     # 不为空
-    cat /proc/cpuinfo | grep avx2
+    cat /proc/cpuinfo | grep -m1 "avx2"
     SUCCESS '13. avx2指令集支持'
   else
     WARN "13. avx2指令集不支持"
@@ -205,7 +205,7 @@ function set_grub_config() {
 
   grub2-mkconfig -o /boot/grub2/grub.cfg
   if [ $? -eq 0 ]; then
-    cat /etc/default/grub
+    cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX"
     SUCCESS "14. 设置grub成功"
   else
     ERROR "14. 设置grub失败"
