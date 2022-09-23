@@ -211,7 +211,7 @@ function make_dir() {
   mkdir -p /data/ti-platform/ && chmod 755 /data/ti-platform/
   mkdir /data/ti-platform-fs
   ls /data/
-  INFO "新建ti-platform目录和ti-platform-fs目录（如果已经存在将会忽略）"
+  INFO "15. 新建ti-platform目录和ti-platform-fs目录（如果已经存在将会忽略）"
 }
 
 INFO "开始..."
