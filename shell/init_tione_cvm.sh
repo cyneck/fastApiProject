@@ -83,6 +83,9 @@ function stop_firewalld() {
 
 function stop_selinux() {
 #  sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+  # 临时关闭
+  setenforce 0
+  # 永久关闭，需要重启
   sed -ir 's/SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
   cat /etc/selinux/config | grep SELINUX
   SUCCESS '6. 关闭selinux成功'
@@ -126,7 +129,7 @@ function set_sysctl_conf() {
   done
 
   set -e
-  cat /etc/sysctl.conf | grep -E "vm|net|fs|kernel"
+  cat /etc/sysctl.conf | grep -E "vm|net|fs|kernel"|sort
   sysctl -p
   if [ $? -eq 0 ]; then
     SUCCESS "8. 设置sysctl_conf成功"
@@ -193,12 +196,19 @@ function set_grub_config() {
   if [ -n "$value" ]; then
     # 不为空
     has=$(cat /etc/default/grub | grep "ipv6.disable=1")
-    if [ -z "$has" ]; then
-      sed -ir "s/ipv6.disable=1//" /etc/default/grub
+    if [ -n "$has" ]; then
+      # 不为空，则删除
+      sed -i "s/ipv6.disable=1//g" /etc/default/grub
+    fi
+
+    has2=$(cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX"| grep "cgroup.memory=nokmem")
+    if [ -n "$has2" ]; then
+      # 不为空则先删除
+      sed -i "s/cgroup.memory=nokmem //g" /etc/default/grub
     fi
 
     # 增加cgroup.memory=nokmem
-    grub_cmd=$(cat /etc/default/grub | grep GRUB_CMDLINE_LINUX | awk '{print $1}')
+    grub_cmd=$(cat /etc/default/grub | grep "GRUB_CMDLINE_LINUX" | awk '{print $1}')
     grub_cmd_new="$grub_cmd cgroup.memory=nokmem"
     sed -i "s/$grub_cmd/$grub_cmd_new/" /etc/default/grub
   fi
