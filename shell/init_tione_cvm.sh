@@ -33,6 +33,7 @@ function boot_mode_check() {
   boot_mode=$([ -d /sys/firmware/efi ] && echo UEFI || echo BIOS)
   set +e
   if [ "$boot_mode" = 'BIOS' ]; then
+    [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
     SUCCESS '启动模式为Legacy'
   else
     ERROR '启动模式不为Legacy'
@@ -63,6 +64,8 @@ function swap_off() {
   sed -ir '/swap/s/^/#/' /etc/fstab
   set +e
 
+  cat /etc/sysctl.conf
+  cat /etc/fstab
   free -h
   SUCCESS 'swap_off'
 }
@@ -77,6 +80,7 @@ function stop_firewalld() {
 
 function stop_selinux() {
   sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+  cat /etc/selinux/config | grep SELINUX
   SUCCESS '关闭selinux'
 }
 
@@ -142,16 +146,20 @@ function set_hosts() {
 function set_dir_chmod() {
   chmod 777 /tmp
   chmod 755 /data
+  SUCCESS "/tmp /data目录权限"
 }
 
 function set_iptable_nat() {
   set -e
   modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
   set +e
+  cat /etc/modules-load.d/cpaas.conf
+  SUCCESS "/etc/modules-load.d/cpaas.conf配置成功"
 }
 
 function set_core_profile() {
   ulimit -c 0 && echo 'ulimit -S -c 0' >>/etc/profile
+  SUCCESS "/etc/profile配置成功"
 }
 
 function check_avx2() {
@@ -159,6 +167,8 @@ function check_avx2() {
   if [ -z "$value" ]; then
     cat /proc/cpuinfo | grep avx2
     SUCCESS 'avx2指令集支持'
+  else
+    WARN "avx2指令集不支持"
   fi
 }
 
@@ -179,6 +189,7 @@ function set_grub_config() {
 
   grub2-mkconfig -o /boot/grub2/grub.cfg
   if [ $? -eq 0 ]; then
+    cat /etc/default/grub
     SUCCESS "设置grub成功"
   else
     ERROR "设置grub失败"
