@@ -159,15 +159,15 @@ function set_dir_chmod() {
 }
 
 function set_iptable_nat() {
-  set -e
+
   value=$(cat /etc/modules-load.d/cpaas.conf | grep "iptable_nat")
-  if [ -z "$value" ]; then
-    # 为空
+
+  if [ $? -en 0 ] || [ -z "$value" ]; then
     modprobe iptable_nat && echo iptable_nat >>/etc/modules-load.d/cpaas.conf
   fi
-  set +e
+
   cat /etc/modules-load.d/cpaas.conf |grep "iptable_nat"
-  SUCCESS "11. /etc/modules-load.d/cpaas.conf配置成功"
+  SUCCESS "11. iptable_nat 配置成功"
 }
 
 function set_core_profile() {
