@@ -6,6 +6,7 @@ ENV MYDIR  /opt/app/
 RUN mkdir -p $MYDIR
 
 RUN sed -i 's#http://deb.debian.org#https://mirrors.aliyun.com#g' /etc/apt/sources.list
+RUN apt update && apt install vim net-tools -y
 RUN pip3 install --no-cache-dir uvicorn fastapi -i https://pypi.douban.com/simple
 
 WORKDIR $MYDIR

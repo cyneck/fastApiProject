@@ -105,11 +105,11 @@ function set_sysctl_conf() {
 
   item_array=("vm.max_map_count" "net.ipv4.ip_forward" "vm.drop_caches"
     "kernel.pid_max" "fs.inotify.max_user_instances" "net.ipv6.conf.all.disable_ipv6"
-    "net.ipv6.conf.default.disable_ipv6" "net.ipv6.conf.lo.disable_ipv6")
+    "net.ipv6.conf.default.disable_ipv6" "net.ipv6.conf.lo.disable_ipv6" "kernel.watchdog_thresh")
 
   item_value_array=("vm.max_map_count=262144" "net.ipv4.ip_forward=1" "vm.drop_caches=3"
     "kernel.pid_max=1000000" "fs.inotify.max_user_instances=524288" "net.ipv6.conf.all.disable_ipv6=0"
-    "net.ipv6.conf.default.disable_ipv6=0" "net.ipv6.conf.lo.disable_ipv6=0")
+    "net.ipv6.conf.default.disable_ipv6=0" "net.ipv6.conf.lo.disable_ipv6=0" "kernel.watchdog_thresh=30")
 
   # ${#<数组名>[@]} 获取数组长度
   # ${<数组名>[i]}  获取第i个位置的元素，下标是 0-base
