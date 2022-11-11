@@ -40,6 +40,16 @@ function boot_mode_check() {
   fi
 }
 
+function check_linux_kernel() {
+  kernel=$(uname -r | tr -cd "[0-9]" | cut -c 1-3)
+  minVersion=310
+  if [[ $kernel -ge $minVersion ]]; then
+    SUCCESS "check_linux_kernel is $kernel (succeed)"
+  else
+    ERROR "check_linux_kernel is $kernel (not match)"
+  fi
+}
+
 function install_pkg() {
   set -e
   yum install -y jq sshpass socat bind-utils net-tools ntpdate redhat-lsb ceph-fuse
@@ -232,6 +242,8 @@ function make_dir() {
 
 INFO "开始..."
 boot_mode_check
+
+check_linux_kernel
 
 install_pkg
 
