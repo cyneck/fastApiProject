@@ -39,7 +39,7 @@ RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.
 RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple \
 && pip config set global.trusted-host mirrors.cloud.tencent.com
 
-RUN /bin/bash -c 'conda create -n jupyter python==3.8 --yes'
+RUN /bin/bash -c 'conda create -n jupyter python=3.8 --yes'
 # 用于激活环境，conda activate命令无效
 SHELL ["conda", "run", "-n", "jupyter", "/bin/bash", "-c"]
 RUN conda activate jupyter && pip install jupyterlab notebook jupyterhub
