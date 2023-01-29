@@ -17,8 +17,8 @@ RUN wget https://mirrors.bfsu.edu.cn/anaconda/miniconda/Miniconda3-py38_4.9.2-Li
 
 ENV PATH=/opt/conda/bin:$PATH
 
-RUN /bin/bash -c 'conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
-&& conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+&& conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
 && conda config --set show_channel_urls yes'
 
 # pytorch
