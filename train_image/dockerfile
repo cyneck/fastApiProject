@@ -42,7 +42,7 @@ RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple
 RUN mkdir /opt/conda && ln -s /root/miniconda3/envs /opt/conda/envs
 
 RUN /bin/bash -c 'conda create -n jupyter python==3.8 --yes'
-RUN /bin/bash -c 'conda activate jupyter && conda install -c install jupyterlab notebook jupyterhub'
+RUN /bin/bash -c 'conda activate jupyter && conda init bash && conda install -c install jupyterlab notebook jupyterhub'
 
 ENV PATH=/root/miniconda3/envs/jupyter/bin:$PATH
 
