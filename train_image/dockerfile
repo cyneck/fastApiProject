@@ -1,0 +1,50 @@
+From nvidia/cuda:10.2-cudnn8-devel-ubuntu18.04
+
+RUN sed -i 's#http://archive.ubuntu.com#http://mirrors.cloud.tencent.com#g' /etc/apt/sources.list
+
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+RUN apt-get update && apt-get install -y --no-install-recommends wget
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+
+RUN apt update && apt install vim wget axel net-tools iputils-ping telnet curl bzip2 zip libxml2 gcc kmod pciutils -y
+
+RUN wget https://mirrors.bfsu.edu.cn/anaconda/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh \
+&& bash Miniconda3-py38_4.9.2-Linux-x86_64.sh -b -p /root/miniconda3 \
+&& rm -f Miniconda3-py38_4.9.2-Linux-x86_64.sh
+
+ENV PATH=/root/miniconda3/bin:$PATH
+
+RUN /bin/bash -c 'conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+&& conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+&& conda config --set show_channel_urls yes'
+
+# pytorch
+RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
+# 安装时PyTorch，官网给的安装命令需要去掉最后的-c pytorch，才能使用清华源
+# conda-forge
+&& conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
+# msys2
+&& conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/ \
+# bioconda
+&& conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ \
+# menpo
+&& conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/menpo/ \
+# 设置搜索时显示通道地址
+&& conda config --set show_channel_urls yes'
+
+
+RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple \
+&& pip config set global.trusted-host mirrors.cloud.tencent.com
+
+RUN mkdir /opt/conda && ln -s /root/miniconda3/envs /opt/conda/envs
+
+RUN /bin/bash -c 'conda create -n jupyter python==3.8 --yes'
+RUN /bin/bash -c 'conda activate jupyter && conda install -c install jupyterlab notebook jupyterhub'
+
+ENV PATH=/root/miniconda3/envs/jupyter/bin:$PATH
+
+RUN mkdir /opt/ml/code && mkdir /opt/ml/input/config && mkdir /opt/ml/input/data && mkdir /opt/ml/input/pretrain_model && mkdir /opt/ml/model  && mkdir /opt/ml/checkpoint && mkdir /opt/ml/output  && mkdir /opt/ml/summary && mkdir /opt/ml/failure && mkdir /opt/ml/entry
+
