@@ -7,7 +7,7 @@ RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-key del 7fa2af80
 RUN apt-get update && apt-get install -y --no-install-recommends wget
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
-RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb && rm -f cuda-keyring_1.0-1_all.deb
 
 RUN apt update && apt install vim wget axel net-tools iputils-ping telnet curl bzip2 zip libxml2 gcc kmod pciutils -y && apt-get clean
 
@@ -59,3 +59,5 @@ RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/summary \
  && mkdir -p /opt/ml/failure \
  && mkdir -p /opt/ml/entry
+
+RUN conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=10.2
