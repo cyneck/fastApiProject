@@ -60,4 +60,4 @@ RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/failure \
  && mkdir -p /opt/ml/entry
 
-RUN conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit==10.2
+RUN conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit==10.2
