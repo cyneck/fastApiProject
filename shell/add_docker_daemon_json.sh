@@ -1,1 +1,1 @@
-sed -ir 's/insecure-registries.*/insecure-registries": \["10.238.14.170:31104",/' /etc/docker/daemon.json
+sed -ir 's/insecure-registries.*/insecure-registries": \["0.0.0.0/0",/' /etc/docker/daemon.json
