@@ -47,7 +47,7 @@ RUN exec bash \
  && . /root/.bashrc \
  && conda init bash \
  && conda activate jupyter \
- && conda install jupyterlab notebook jupyterhub
+ && pip install jupyterlab notebook jupyterhub
 
 RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/input/config \
@@ -60,4 +60,7 @@ RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/failure \
  && mkdir -p /opt/ml/entry
 
-RUN exec bash && conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit==10.2
+RUN exec bash \
+ && . /root/.bashrc \
+ && conda init bash \
+ && conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 --yes
