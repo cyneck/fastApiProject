@@ -1,4 +1,4 @@
-From nvidia/cuda:10.2-cudnn8-devel-ubuntu18.04
+From nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 
 RUN sed -i 's#http://archive.ubuntu.com#http://mirrors.cloud.tencent.com#g' /etc/apt/sources.list
 
@@ -15,12 +15,11 @@ RUN wget https://mirrors.bfsu.edu.cn/anaconda/miniconda/Miniconda3-py38_4.9.2-Li
 && bash Miniconda3-py38_4.9.2-Linux-x86_64.sh -b -p /opt/conda \
 && rm -f Miniconda3-py38_4.9.2-Linux-x86_64.sh
 
-ENV PATH=/opt/conda/bin:$PATH
+ENV PATH=/opt/conda/bin:${PATH}
 
 RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
 && conda config --set show_channel_urls yes'
-
 
 RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
@@ -29,17 +28,13 @@ RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.
 && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/menpo/ \
 && conda config --set show_channel_urls yes'
 
-
 RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple \
 && pip config set global.trusted-host mirrors.cloud.tencent.com
 
-RUN /bin/bash -c 'conda create -n jupyter python=3.8 --yes'
+RUN /bin/bash -c 'conda create -n jupyter python=3.8 jupyterlab notebook jupyterhub --yes'
 
-RUN exec bash \
- && . /root/.bashrc \
- && conda init bash \
- && conda activate jupyter \
- && pip install jupyterlab notebook jupyterhub
+SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
+RUN conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 --yes
 
 RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/input/config \
@@ -51,10 +46,5 @@ RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/summary \
  && mkdir -p /opt/ml/failure \
  && mkdir -p /opt/ml/entry
-
-RUN exec bash \
- && . /root/.bashrc \
- && conda init bash \
- && conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 --yes
 
 CMD ["/bin/bash"]
