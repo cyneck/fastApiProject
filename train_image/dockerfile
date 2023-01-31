@@ -47,4 +47,6 @@ RUN mkdir -p /opt/ml/code \
  && mkdir -p /opt/ml/failure \
  && mkdir -p /opt/ml/entry
 
+WORKDIR /opt/ml/code
+
 CMD ["/bin/bash"]
