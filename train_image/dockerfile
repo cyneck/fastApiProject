@@ -31,6 +31,8 @@ RUN /bin/bash -c 'conda config --add channels https://mirrors.tuna.tsinghua.edu.
 RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple \
 && pip config set global.trusted-host mirrors.cloud.tencent.com
 
+# ENV REFRESH_DATE 2023-1-30 更改这个时间，就会让后面的命令不使用缓存
+
 RUN /bin/bash -c 'conda create -n jupyter python=3.8 jupyterlab notebook jupyterhub --yes'
 
 SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
