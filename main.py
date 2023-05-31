@@ -1,12 +1,17 @@
 from fastapi import FastAPI
 import uvicorn
 
+import subprocess
+
+print(subprocess.call(["ls", "-l"], shell=False)) # shell参数为false，则，命令以及参数以列表的形式给出
+
 app = FastAPI()
 
 
 @app.post("/api")
 async def api():
     return {"message": "test api"}
+
 
 @app.get("/test")
 async def root():
