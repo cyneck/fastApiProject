@@ -1,19 +1,14 @@
 #!/bin/bash
 
-result="pip3_list.txt"
-
 # 方法一
 function get_all_pod_python() {
+  result="pip3_list.txt"
   for ns in $(kubectl get ns -o name | grep -E "/ns-|/project-"); do
     for pod in $(kubectl get pod -n ${ns#namespace/} -o name); do
-      echo "pip3 packages in ${ns#namespace/} ${pod#pod/}:"
-      kubectl exec -it -n ${ns#namespace/} ${pod#pod/} -- sh -c 'python3 --version && pip3 list --format=columns' >>$result
-      if [ $? -eq 0 ]; then
-        echo ${ns#namespace/} ${pod#pod/} >>$result
-      else
-        echo "失败"
-      fi
-
+      set -e
+      kubectl exec -it -n ${ns#namespace/} ${pod#pod/} -- bash -c 'pip3 list --format=columns' >> ${result}
+      set +e
+      echo ${ns#namespace/} ${pod#pod/} >>${result}
     done
   done
 }
@@ -26,8 +21,7 @@ function read_pod_python() {
   while read -r ns_pod; do
     namespace=$(echo $ns_pod | cut -d' ' -f1)
     pod=$(echo ${ns_pod} | cut -d' ' -f2)
-    install_pip ${namespace} ${pod}
-    kubectl exec -it -n ${namespace} ${pod} -- sh -c 'pip3 list --format=columns || echo "失败" ' >>${result}
+    kubectl exec -n ${namespace} ${pod} -- sh -c 'pip3 list --format=columns|| echo "Pip not found!" ' >>${result}
     echo "${namespace} ${pod}" >>${result}
   done <$filename
 }
