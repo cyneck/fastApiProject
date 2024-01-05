@@ -1,0 +1,1 @@
+ansible -i hosts node -m shell -a "echo quit | timeout --signal=9 2 telnet 10.238.13.144 28000"

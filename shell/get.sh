@@ -1,0 +1,1 @@
+curl -XPOST  http://callback-auth.ns-67.svc.cluster.local:80/Get -H 'Content-Type: application/json' -d '{"SubmitId":"ab5c6x2j4hl66d7v","RequestId":"p000087ht"}'

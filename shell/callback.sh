@@ -1,0 +1,1 @@
+curl -XPOST  http://callback-auth.ns-67.svc.cluster.local:80/Call -H 'Content-Type: application/json'  -d '{"CallbackUrl":"http://word_seg_check","SubmitId":"ab5c6x2j4hl66d7v","RequestId":"p000087ht","Input":{"title":"请帮我搜索今日说法最新一期"}}'

@@ -1,0 +1,5 @@
+From 10.238.14.170:31104/ti-platform/torch191-cu111:vixon1.1
+
+RUN pip3 install torch==1.8 torchvision==0.8.2 jupyterhub
+
+RUN mkdir -p /opt/conda/envs/jupyter/bin/ && ln -s /usr/local/bin/jupyter-labhub /opt/conda/envs/jupyter/bin/
